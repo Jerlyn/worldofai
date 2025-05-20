@@ -2,7 +2,7 @@
 
 An interactive web quiz game based on the children's book "The Incredible World of AI with Charlie" by Jerlyn Thomas.
 
-![Game Screenshot](public/screenshots/game-screenshot.png)
+![Game Screenshot](public/images/phone.png)
 
 ## 🎮 About the Game
 
@@ -36,8 +36,8 @@ Available for purchase at: [book purchase URL]
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/incredibleworld.git
-cd ai-adventure-game
+git clone https://github.com/Jerlyn/worldofai.git
+cd worldofai
 ```
 
 2. Install dependencies:
@@ -85,4 +85,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgements
 
 - Illustrations from "The Incredible World of AI with Charlie" book
-- https://incredibleworldofai.framer.website/
+- https://incredibleworld.framer.ai/ 
