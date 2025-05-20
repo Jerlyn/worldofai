@@ -378,8 +378,9 @@ const App = () => {
     switch (gameState) {
       case 'start':
         return (
-          <div className="flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background }}>
-            
+         // <div className="flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background }}>
+         <div className="relative flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background }}>
+
             <img 
                 src={characters.titleImg} 
                 alt="Skateboarding Title" 
