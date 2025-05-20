@@ -2,7 +2,7 @@
 
 An interactive web quiz game based on the children's book "The Incredible World of AI with Charlie" by Jerlyn Thomas.
 
-![Game Screenshot](public/images/phonepreview.png)
+![Game Screenshot](docs/images/phonepreview.png)
 
 ## 🎮 About the Game
 
