@@ -379,7 +379,8 @@ const App = () => {
       case 'start':
         return (
          // <div className="flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background }}>
-         <div className="relative flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background }}>
+        // <div className="relative flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background }}>
+            <div className="flex flex-col items-center justify-center p-6 text-center" style={{ backgroundColor: colors.background, position: 'relative' }}>
 
             <img 
                 src={characters.titleImg} 
