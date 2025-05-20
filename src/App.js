@@ -141,7 +141,7 @@ const characters = {
 const characterStyles = {
   giraffeBottom: {
     position: 'fixed',
-    bottom: 0,
+    top: 200,
     left: 0,
     height: '150px',
     width: 'auto',
