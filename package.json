@@ -2,7 +2,7 @@
   "name": "World of AI",
   "version": "1.0.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://jerlyn.github.io/worldofai",
   "dependencies": {
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
