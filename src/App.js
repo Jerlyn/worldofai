@@ -141,12 +141,12 @@ const characters = {
 const characterStyles = {
   giraffeBottom: {
     position: 'fixed',
-    bottom: 200,
+    top: 200px,      // Change from bottom: 0 to top: 200px
     left: 0,
     height: '150px',
     width: 'auto',
     zIndex: 10,
-    pointerEvents: 'none' // Makes the image ignore mouse events
+    pointerEvents: 'none'
   },
   robotBottom: {
     position: 'fixed',
