@@ -140,12 +140,14 @@ const characters = {
 // Character CSS styles for fixed positioning
 const characterStyles = {
   giraffeBottom: {
-    position: 'fixed',
-    top: '200px',      // Change from bottom: 0 to top: 200px
-    left: 0,
-    height: '150px',
+    position: 'absolute',  // Try absolute instead of fixed
+    top: '200px',
+    left: '20px',          // Add some left margin to make sure it's visible
+    height: '200px',       // Increase height to make it more noticeable
     width: 'auto',
-    zIndex: 10,
+    zIndex: 100,           // Increase z-index dramatically to ensure it's on top
+    border: '3px solid red', // Add a visible border for debugging
+    backgroundColor: 'rgba(255,255,0,0.3)', // Add a slight background for visibility
     pointerEvents: 'none'
   },
   robotBottom: {
