@@ -131,10 +131,10 @@ const gameMode = { id: "quiz", name: "AI Quiz Challenge", description: "Answer m
 
 // Character assets
 const characters = {
-  charlie: "/images/charlie.png", // Charlie character
-  robot: "/images/robot.png",   // Robot character
-  giraffe: "/images/giraffe.png",  // Skateboarding giraffe
-  titleImg: "/images/title.png"  //Title image
+  charlie: "./images/charlie.png", // Charlie character
+  robot: "./images/robot.png",   // Robot character
+  giraffe: "./images/giraffe.png",  // Skateboarding giraffe
+  titleImg: "./images/title.png"  //Title image
 };
 
 // Character CSS styles for fixed positioning

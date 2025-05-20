@@ -1,7 +1,8 @@
 {
-  "name": "ai-adventure-glossary-game",
+  "name": "World of AI",
   "version": "1.0.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
@@ -11,6 +12,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:docs": "BUILD_PATH=docs react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
