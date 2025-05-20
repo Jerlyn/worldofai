@@ -140,7 +140,7 @@ const characters = {
 // Character CSS styles for fixed positioning
 const characterStyles = {
   giraffeBottom: {
-    position: 'absolute',  // Try absolute instead of fixed
+    position: 'relative',  // Try absolute instead of fixed
     top: '200px',
     left: '20px',          // Add some left margin to make sure it's visible
     height: '200px',       // Increase height to make it more noticeable
