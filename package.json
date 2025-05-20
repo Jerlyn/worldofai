@@ -39,7 +39,7 @@
     "tailwindcss": "^3.3.2"
   }
   {
-    "homepage": "https://jerlyn.github.io/incredibleworld",
+    "homepage": "https://jerlyn.github.io/worldofai",
     "scripts": {
       // ...existing scripts
       "predeploy": "npm run build",
