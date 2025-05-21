@@ -133,11 +133,11 @@ const gameMode = { id: "quiz", name: "AI Quiz Challenge", description: "Answer m
 const characters = {
   charlie: "./images/charlie.png", // Charlie character
   robot: "./images/robot.png",     // Robot character
-  giraffe: "./images/giraffe.png", // Skateboarding giraffe
+  giraffe: "./images/giraffe.png", // Skateboarding giraffe (only used on landing screen)
   titleImg: "./images/title.png"   // Title image
 };
 
-// Character CSS styles for fixed positioning - removed giraffe, keeping other characters
+// Character CSS styles for fixed positioning - removing any giraffe styling
 const characterStyles = {
   robotBottom: {
     position: 'fixed',
