@@ -132,22 +132,13 @@ const gameMode = { id: "quiz", name: "AI Quiz Challenge", description: "Answer m
 // Character assets
 const characters = {
   charlie: "./images/charlie.png", // Charlie character
-  robot: "./images/robot.png",   // Robot character
-  giraffe: "./images/giraffe.png",  // Skateboarding giraffe
-  titleImg: "./images/title.png"  //Title image
+  robot: "./images/robot.png",     // Robot character
+  giraffe: "./images/giraffe.png", // Skateboarding giraffe
+  titleImg: "./images/title.png"   // Title image
 };
 
-// Character CSS styles for fixed positioning
+// Character CSS styles for fixed positioning - removed giraffe, keeping other characters
 const characterStyles = {
-  giraffeBottom: {
-    position: 'fixed',
-    top: '200px',
-    left: '20px',
-    height: '200px',
-    width: 'auto',
-    zIndex: 1000,
-    pointerEvents: 'none'
-  },
   robotBottom: {
     position: 'fixed',
     bottom: 0,
@@ -186,35 +177,6 @@ const App = () => {
   const [hintsRemaining, setHintsRemaining] = useState(3); // 3 hints per game
   const [bonusPoints, setBonusPoints] = useState(0);
   const timerRef = useRef(null);
-  
-  // For giraffe image path testing
-  const [giraffeLoaded, setGiraffeLoaded] = useState(false);
-  const [currentGiraffePath, setCurrentGiraffePath] = useState(characters.giraffe);
-  
-  // Try all possible image paths to find the one that works
-  useEffect(() => {
-    const possiblePaths = [
-      characters.giraffe,         // Original path
-      "./images/giraffe.png",     // Relative path
-      "/images/giraffe.png",      // Root path
-      "images/giraffe.png",       // No leading dot
-      "../images/giraffe.png",    // One directory up
-    ];
-    
-    // Test each path
-    possiblePaths.forEach(path => {
-      const img = new Image();
-      img.onload = () => {
-        console.log(`✅ Giraffe image loaded successfully from: ${path}`);
-        setCurrentGiraffePath(path);
-        setGiraffeLoaded(true);
-      };
-      img.onerror = () => {
-        console.log(`❌ Failed to load giraffe image from: ${path}`);
-      };
-      img.src = path;
-    });
-  }, []);
 
   // Prepare game when starting
   useEffect(() => {
@@ -421,8 +383,8 @@ const App = () => {
                   className="h-32 w-auto"
                 />
                 <img 
-                  src={characters.robot} 
-                  alt="Robot" 
+                  src={characters.giraffe} 
+                  alt="Giraffe" 
                   className="h-32 w-auto"
                 />
               </div>
@@ -616,6 +578,12 @@ const App = () => {
               {difficulty === 'hard' && <span style={{ color: colors.purple }}>Hard</span>}
             </div>
             
+            {/* Robot at bottom */}
+            <img 
+              src={characters.robot} 
+              alt="AI Robot" 
+              style={characterStyles.robotBottom}
+            />
           </div>
         );
         
@@ -862,6 +830,13 @@ const App = () => {
                 <li>For the full learning experience, check out the complete book!</li>
               </ul>
             </div>
+            
+            {/* Charlie at bottom */}
+            <img 
+              src={characters.charlie} 
+              alt="Charlie" 
+              style={characterStyles.charlieBottom}
+            />
           </div>
         );
         
@@ -872,91 +847,9 @@ const App = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* --------- THE GIRAFFE IMAGE - COMPLETELY OUTSIDE THE GAME CONTENT --------- */}
-      {/* This will be fixed at top:200px left:20px regardless of the game state */}
-      {/* Using both image and fallback div to ensure something shows up */}
-      
-      {/* Fallback div to ensure position is visible */}
-      {!giraffeLoaded && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: '200px',
-            left: '20px',
-            height: '200px',
-            width: '200px',
-            backgroundColor: 'red',
-            color: 'white',
-            zIndex: 9998,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 'bold',
-            border: '3px solid blue',
-          }}
-        >
-          GIRAFFE POSITION
-        </div>
-      )}
-      
-      {/* The actual giraffe image */}
-      <img 
-        src={currentGiraffePath} 
-        alt="Skateboarding Giraffe"
-        onLoad={() => setGiraffeLoaded(true)}
-        onError={(e) => console.error("Giraffe image failed to load:", e)}
-        style={{
-          position: 'fixed',
-          top: '200px',
-          left: '20px',
-          height: '200px',
-          width: 'auto',
-          zIndex: 9999,
-          pointerEvents: 'none',
-          border: '3px solid red', // Visual debug border
-        }}
-      />
-      
-      {/* External remote fallback image (in case local image path is wrong) */}
-      {!giraffeLoaded && (
-        <img 
-          src="https://via.placeholder.com/200x200?text=Giraffe" 
-          alt="Fallback Giraffe"
-          style={{
-            position: 'fixed',
-            top: '200px',
-            left: '20px',
-            height: '200px',
-            width: '200px',
-            zIndex: 9997,
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-      
-      {/* Rest of the app */}
       <div className="flex-1">
         {renderGameContent()}
       </div>
-      
-      {/* Robot character - positioned using fixed positioning */}
-      {gameState === 'playing' && (
-        <img 
-          src={characters.robot} 
-          alt="AI Robot" 
-          style={characterStyles.robotBottom}
-        />
-      )}
-      
-      {/* Charlie character - positioned using fixed positioning for instructions screen */}
-      {gameState === 'instructions' && (
-        <img 
-          src={characters.charlie} 
-          alt="Charlie" 
-          style={characterStyles.charlieBottom}
-        />
-      )}
-      
       <footer className="py-2 text-center text-sm" style={{ backgroundColor: colors.primary, color: colors.white }}>
         © 2025 Jerlyn Thomas | The Incredible World of AI with Charlie
       </footer>
