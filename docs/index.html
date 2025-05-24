@@ -443,7 +443,7 @@
                 ctx.fillStyle = COLORS.NAVY;
                 ctx.font = 'bold 24px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('AI Quiz Achievement', 200, 50);
+                ctx.fillText('Your World of AI Score!', 200, 50);
                 
                 ctx.font = '18px Arial';
                 ctx.fillText(`Score: ${score}/${questionsPerGame}`, 200, 100);
@@ -455,7 +455,7 @@
                 
                 // Download
                 const link = document.createElement('a');
-                link.download = 'ai-quiz-achievement.png';
+                link.download = 'worldofai.png';
                 link.href = canvas.toDataURL();
                 link.click();
             };
