@@ -134,7 +134,7 @@ const characters = {
   charlie: "./images/charlie.png", // Charlie character
   robot: "./images/robot.png",     // Robot character
   giraffe: "./images/giraffe.png", // Skateboarding giraffe (only used on landing screen)
-  titleImg: "./images/title.png"   // Title image
+  titleImg: "./images/title.png",   // Title image
   bookImg: "./docs/images/bookcover.png" // Book cover image
 };
 
