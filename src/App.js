@@ -135,6 +135,7 @@ const characters = {
   robot: "./images/robot.png",     // Robot character
   giraffe: "./images/giraffe.png", // Skateboarding giraffe (only used on landing screen)
   titleImg: "./images/title.png"   // Title image
+  bookImg: "./images/book.png" // Book cover image
 };
 
 // Character CSS styles for fixed positioning - removing any giraffe styling
@@ -695,10 +696,10 @@ const App = () => {
             <div className="rounded-lg p-4 mb-6 border-2" style={{ backgroundColor: colors.white, borderColor: colors.primary }}>
               <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
                 <img 
-                  src="./images/book.png" 
-                  alt="The Incredible World of AI with Charlie Book Cover" 
-                  className="rounded-lg mb-4 md:mb-0 w-32 h-auto"
-                />
+                src={characters.bookImg} 
+                alt="The Incredible World of AI with Charlie Book Cover" 
+                className="rounded-lg mb-4 md:mb-0 w-32 h-auto"
+              />
                 <div>
                   <h3 className="font-bold text-lg mb-2" style={{ color: colors.primary }}>The Incredible World of AI with Charlie</h3>
                   <h4 className="text-sm mb-2" style={{ color: colors.secondary }}>by Jerlyn Thomas</h4>
