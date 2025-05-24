@@ -454,7 +454,7 @@ const App = () => {
                 <Book size={18} className="mr-1" /> About the Book
               </button>
               <button onClick={() => setGameState('instructions')} className="flex items-center" style={{ color: colors.primary }}>
-                <Info size={18} className="mr-1" /> How to Play
+                <Info size={18} className="mr-1" /> Game Instructions
               </button>
             </div>
           </div>
