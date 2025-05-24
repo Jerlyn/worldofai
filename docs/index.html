@@ -1,1 +1,965 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="images/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#f6c425"/><meta name="description" content="AI Adventure: Charlie's Glossary Challenge - A fun quiz game based on The Incredible World of AI with Charlie"/><link rel="apple-touch-icon" href="images/logo192.png"/><link rel="manifest" href="manifest.json"/><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet"><title>AI Adventure: Charlie's Glossary Challenge</title><script defer="defer" src="/worldofai/static/js/main.d55bb69c.js"></script><link href="/worldofai/static/css/main.bf83631f.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Incredible World of AI with Charlie - Quiz Game</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .quiz-container {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        .focus-visible:focus {
+            outline: 3px solid #1b294b;
+            outline-offset: 2px;
+        }
+        
+        .button-hover:hover {
+            transform: translateY(-1px);
+            transition: transform 0.2s ease;
+        }
+        
+        .character-image {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        /* Ensure proper contrast for all interactive elements */
+        .contrast-compliant {
+            color: #1b294b;
+            background-color: #ffffff;
+        }
+        
+        .contrast-compliant:hover {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { 
+            Star, ChevronRight, Book, Info, ArrowLeft, Clock, Zap, 
+            HelpCircle, Check, X, Share2, Download, ExternalLink 
+        } = lucideReact;
+
+        // Color constants for accessibility compliance
+        const COLORS = {
+            YELLOW: "#f6c425",
+            NAVY: "#1b294b", 
+            ORANGE: "#BF4B0B",
+            BLUE: "#3EA0C6",
+            GREEN: "#427D32",
+            PURPLE: "#8e4a7f",
+            WHITE: "#ffffff",
+            LIGHT_GRAY: "#f8fafc",
+            BORDER_GRAY: "#d1d5db"
+        };
+
+        // Image assets
+        const IMAGES = {
+            charlie: "./images/charlie.png",
+            robot: "./images/robot.png", 
+            giraffe: "./images/giraffe.png",
+            title: "./images/title.png",
+            bookcover: "./images/bookcover.png"
+        };
+
+        // AI Terms glossary data
+        const AI_TERMS = [
+            {
+                term: "Artificial Intelligence (AI)",
+                definition: "A computer program that can learn and solve problems like humans do. It's like teaching a computer to think and make decisions on its own.",
+                difficulty: "easy",
+                icon: "🤖"
+            },
+            {
+                term: "Prompt",
+                definition: "The instructions or description you give an AI. Think of it like giving directions to a friend—the clearer your prompt, the better the result!",
+                difficulty: "easy", 
+                icon: "📝"
+            },
+            {
+                term: "Hallucination",
+                definition: "When AI confidently makes up information that sounds real but isn't true. It's not lying on purpose—it's just confused!",
+                difficulty: "easy",
+                icon: "🌈"
+            },
+            {
+                term: "Text Generation",
+                definition: "How AI creates written content based on prompts. This can include stories, essays, dialogue, or information.",
+                difficulty: "easy",
+                icon: "📚"
+            },
+            {
+                term: "Image Generation", 
+                definition: "How AI creates brand new pictures based on descriptions. It's like having an artist who can draw anything you describe!",
+                difficulty: "easy",
+                icon: "🖼️"
+            },
+            {
+                term: "Algorithm",
+                definition: "A step-by-step recipe that tells a computer how to solve a problem. Think of it as the exact instructions you'd follow to bake cookies!",
+                difficulty: "medium",
+                icon: "🍪"
+            },
+            {
+                term: "Generative AI",
+                definition: "AI that creates new content like images, stories, or music based on what it's learned. It's like a super-creative assistant who has studied millions of examples.",
+                difficulty: "medium", 
+                icon: "✨"
+            },
+            {
+                term: "Machine Learning",
+                definition: "A type of AI where computers learn from examples rather than being explicitly programmed. It's like learning to recognize animals by seeing lots of pictures instead of memorizing a list of features.",
+                difficulty: "medium",
+                icon: "🧠"
+            },
+            {
+                term: "Training Data",
+                definition: "The collection of examples (like pictures, stories, or songs) that an AI learns from. Think of it as the AI's textbooks and study materials.",
+                difficulty: "medium",
+                icon: "📊"
+            },
+            {
+                term: "Fact-checking",
+                definition: "Making sure information is true by checking reliable sources. This is super important when using AI, since it can make mistakes!",
+                difficulty: "medium",
+                icon: "🔍"
+            },
+            {
+                term: "Neural Network",
+                definition: "The technology behind modern AI, inspired by how human brains work. It contains layers of mathematical connections that help the AI recognize patterns and make decisions.",
+                difficulty: "hard",
+                icon: "🧬"
+            },
+            {
+                term: "Parameters",
+                definition: "The AI's memory cells that store what it learns. More parameters mean the AI can remember more patterns and create more complex things.",
+                difficulty: "hard",
+                icon: "💾"
+            },
+            {
+                term: "Tokens",
+                definition: "The puzzle pieces AI uses to understand text. Some tokens are whole words, others are parts of words like 'un-' or '-ing'.",
+                difficulty: "hard",
+                icon: "🧩"
+            },
+            {
+                term: "Pattern Recognition",
+                definition: "The ability to identify regularities or meaningful information in data. This is what enables AI to recognize cats in photos or understand that stories typically have beginnings, middles, and ends.",
+                difficulty: "hard",
+                icon: "👁️"
+            },
+            {
+                term: "Natural Language Processing (NLP)",
+                definition: "Technology that helps computers understand and respond to human language. This is what lets you talk to virtual assistants like Siri or Alexa.",
+                difficulty: "hard",
+                icon: "💬"
+            }
+        ];
+
+        // Main Quiz Component
+        const AIQuizGame = () => {
+            // Game state management
+            const [gameState, setGameState] = useState("start");
+            const [difficulty, setDifficulty] = useState("medium");
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [score, setScore] = useState(0);
+            const [selectedTerm, setSelectedTerm] = useState(null);
+            const [options, setOptions] = useState([]);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [isCorrect, setIsCorrect] = useState(null);
+            const [questions, setQuestions] = useState([]);
+            const [questionsPerGame] = useState(5);
+            const [timeLeft, setTimeLeft] = useState(30);
+            const [isTimerActive, setIsTimerActive] = useState(false);
+            const [hintsUsed, setHintsUsed] = useState(0);
+            const [showHint, setShowHint] = useState(false);
+            const [hintsRemaining, setHintsRemaining] = useState(3);
+            const [timeBonus, setTimeBonus] = useState(0);
+            
+            const timerRef = useRef(null);
+
+            // Timer management
+            useEffect(() => {
+                if (gameState === "playing") {
+                    initializeGame();
+                }
+                return () => {
+                    if (timerRef.current) clearInterval(timerRef.current);
+                };
+            }, [gameState, difficulty]);
+
+            useEffect(() => {
+                if (gameState === "playing" && isTimerActive && timeLeft > 0) {
+                    timerRef.current = setInterval(() => {
+                        setTimeLeft(prev => prev - 1);
+                    }, 1000);
+                } else if (timeLeft === 0 && isTimerActive) {
+                    handleTimeout();
+                }
+                
+                return () => {
+                    if (timerRef.current) clearInterval(timerRef.current);
+                };
+            }, [timeLeft, isTimerActive, gameState]);
+
+            // Game initialization
+            const initializeGame = () => {
+                const difficultyTerms = AI_TERMS.filter(term => term.difficulty === difficulty);
+                let gameTerms = [...difficultyTerms];
+                
+                if (difficultyTerms.length < questionsPerGame) {
+                    const additionalTerms = AI_TERMS
+                        .filter(term => term.difficulty !== difficulty)
+                        .sort(() => 0.5 - Math.random())
+                        .slice(0, questionsPerGame - difficultyTerms.length);
+                    gameTerms = [...difficultyTerms, ...additionalTerms];
+                }
+                
+                const shuffledQuestions = [...gameTerms]
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, questionsPerGame);
+                
+                setQuestions(shuffledQuestions);
+                setCurrentQuestion(0);
+                setScore(0);
+                setTimeBonus(0);
+                setHintsUsed(0);
+                setHintsRemaining(3);
+                setupQuestion(shuffledQuestions, 0);
+            };
+
+            const setupQuestion = (questionArray, questionIndex) => {
+                const currentTerm = questionArray[questionIndex];
+                setSelectedTerm(currentTerm);
+                setShowHint(false);
+                setTimeLeft(30);
+                setIsTimerActive(true);
+                
+                const wrongAnswers = [...AI_TERMS.filter(term => term.term !== currentTerm.term)]
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 3)
+                    .map(term => term.term);
+                
+                const allOptions = [...wrongAnswers, currentTerm.term]
+                    .sort(() => 0.5 - Math.random());
+                
+                setOptions(allOptions);
+            };
+
+            const handleTimeout = () => {
+                setIsTimerActive(false);
+                if (selectedAnswer === null) {
+                    setSelectedAnswer("timeout");
+                    setIsCorrect(false);
+                    setTimeout(() => {
+                        if (currentQuestion + 1 < questionsPerGame) {
+                            setCurrentQuestion(currentQuestion + 1);
+                            setupQuestion(questions, currentQuestion + 1);
+                            setSelectedAnswer(null);
+                            setIsCorrect(null);
+                        } else {
+                            setGameState("result");
+                        }
+                    }, 1500);
+                }
+            };
+
+            const useHint = () => {
+                if (hintsRemaining > 0) {
+                    setHintsRemaining(hintsRemaining - 1);
+                    setHintsUsed(hintsUsed + 1);
+                    setShowHint(true);
+                }
+            };
+
+            const generateHint = () => {
+                const term = selectedTerm.term;
+                const firstLetter = term.charAt(0);
+                
+                if (term.includes("(")) {
+                    return `This term is often abbreviated as ${term.match(/\(([^)]+)\)/)[1]}`;
+                }
+                
+                if (term.length > 10) {
+                    return `This is a ${term.length}-letter term that starts with "${firstLetter}"`;
+                }
+                
+                return `This term starts with the letter "${firstLetter}"`;
+            };
+
+            const handleAnswerSelect = (answer) => {
+                setIsTimerActive(false);
+                if (timerRef.current) clearInterval(timerRef.current);
+                
+                setSelectedAnswer(answer);
+                const correct = answer === selectedTerm.term;
+                setIsCorrect(correct);
+                
+                if (correct) {
+                    const bonus = Math.floor(timeLeft / 3);
+                    setTimeBonus(prev => prev + bonus);
+                    setScore(score + 1);
+                }
+                
+                setTimeout(() => {
+                    if (currentQuestion + 1 < questionsPerGame) {
+                        setCurrentQuestion(currentQuestion + 1);
+                        setupQuestion(questions, currentQuestion + 1);
+                        setSelectedAnswer(null);
+                        setIsCorrect(null);
+                    } else {
+                        setGameState("result");
+                    }
+                }, 1500);
+            };
+
+            const handleShare = () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'AI Quiz Challenge Results',
+                        text: `I scored ${score}/${questionsPerGame} on the AI Quiz Challenge! Test your AI knowledge with Charlie.`,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback for browsers without Web Share API
+                    const text = `I scored ${score}/${questionsPerGame} on the AI Quiz Challenge! Test your AI knowledge with Charlie at ${window.location.href}`;
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('Score copied to clipboard!');
+                    });
+                }
+            };
+
+            const handleDownload = () => {
+                // Create a simple achievement card download
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 400;
+                canvas.height = 300;
+                
+                // Background
+                ctx.fillStyle = COLORS.YELLOW;
+                ctx.fillRect(0, 0, 400, 300);
+                
+                // Text
+                ctx.fillStyle = COLORS.NAVY;
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('AI Quiz Achievement', 200, 50);
+                
+                ctx.font = '18px Arial';
+                ctx.fillText(`Score: ${score}/${questionsPerGame}`, 200, 100);
+                ctx.fillText(`Difficulty: ${difficulty}`, 200, 130);
+                ctx.fillText(`Total Score: ${score + timeBonus}`, 200, 160);
+                
+                ctx.font = '14px Arial';
+                ctx.fillText('The Incredible World of AI with Charlie', 200, 220);
+                
+                // Download
+                const link = document.createElement('a');
+                link.download = 'ai-quiz-achievement.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            };
+
+            const restartGame = () => {
+                setGameState("playing");
+                setSelectedAnswer(null);
+                setIsCorrect(null);
+            };
+
+            const goHome = () => {
+                setGameState("start");
+            };
+
+            const changeDifficulty = (newDifficulty) => {
+                setDifficulty(newDifficulty);
+            };
+
+            // Render functions for different game states
+            const renderStartScreen = () => (
+                <div className="flex flex-col items-center justify-center p-6 text-center" 
+                     style={{ backgroundColor: COLORS.YELLOW }}>
+                    <img src={IMAGES.title} alt="The Incredible World of AI with Charlie" className="h-32 w-auto mb-8" />
+                    
+                    <div className="rounded-lg p-6 mb-6 w-full max-w-md border-4" 
+                         style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                        
+                        <div className="flex justify-center gap-6 mb-4">
+                            <img src={IMAGES.charlie} alt="Charlie" className="h-32 w-auto character-image" />
+                            <img src={IMAGES.robot} alt="AI Robot" className="h-32 w-auto character-image" />
+                        </div>
+                        
+                        <p className="mb-6" style={{ color: COLORS.NAVY }}>
+                            Join Charlie on an exciting journey to explore the incredible world of AI! 
+                            Test your knowledge of AI concepts and terms from "The Incredible World of AI with Charlie."
+                        </p>
+                        
+                        <h3 className="font-bold text-lg mb-3" style={{ color: COLORS.NAVY }}>
+                            Select Difficulty:
+                        </h3>
+                        
+                        <div className="grid grid-cols-3 gap-2 mb-6">
+                            {[
+                                { level: "easy", color: COLORS.GREEN, label: "Easy", stars: 1 },
+                                { level: "medium", color: COLORS.ORANGE, label: "Medium", stars: 2 }, 
+                                { level: "hard", color: COLORS.PURPLE, label: "Hard", stars: 3 }
+                            ].map(({ level, color, label, stars }) => (
+                                <button
+                                    key={level}
+                                    onClick={() => changeDifficulty(level)}
+                                    className={`p-2 rounded-lg button-hover focus-visible ${difficulty === level ? 'text-white' : 'opacity-75'}`}
+                                    style={{
+                                        backgroundColor: difficulty === level ? color : COLORS.LIGHT_GRAY,
+                                        border: `2px solid ${color}`,
+                                        color: difficulty === level ? COLORS.WHITE : color
+                                    }}
+                                    aria-pressed={difficulty === level}
+                                >
+                                    <div className="flex justify-center mb-1">
+                                        {Array.from({ length: stars }, (_, i) => (
+                                            <Star key={i} size={16} />
+                                        ))}
+                                    </div>
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                        
+                        <button
+                            onClick={() => setGameState("playing")}
+                            className="py-3 px-6 rounded-full flex items-center justify-center w-full button-hover focus-visible"
+                            style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
+                        >
+                            Start Quiz Challenge <ChevronRight className="ml-2" size={20} />
+                        </button>
+                    </div>
+                    
+                    <div className="flex space-x-6 mb-6">
+                        <button
+                            onClick={() => setGameState("about")}
+                            className="flex items-center button-hover focus-visible"
+                            style={{ color: COLORS.NAVY }}
+                        >
+                            <Book size={18} className="mr-1" /> About the Book
+                        </button>
+                        <button
+                            onClick={() => setGameState("instructions")}
+                            className="flex items-center button-hover focus-visible"
+                            style={{ color: COLORS.NAVY }}
+                        >
+                            <Info size={18} className="mr-1" /> Game Instructions
+                        </button>
+                    </div>
+                    
+                    <img src={IMAGES.giraffe} alt="Skateboarding Giraffe" 
+                         className="fixed bottom-0 left-0 h-36 w-auto pointer-events-none character-image" />
+                </div>
+            );
+
+            const renderPlayingScreen = () => (
+                <div className="p-6" style={{ backgroundColor: COLORS.YELLOW }}>
+                    {/* Game Header */}
+                    <div className="flex justify-between items-center mb-4">
+                        <button
+                            onClick={goHome}
+                            className="flex items-center button-hover focus-visible"
+                            style={{ color: COLORS.NAVY }}
+                        >
+                            <ArrowLeft size={18} className="mr-1" /> Exit
+                        </button>
+                        <div style={{ color: COLORS.NAVY }} className="font-semibold">
+                            {currentQuestion + 1}/{questionsPerGame}
+                        </div>
+                        <div className="rounded-full py-1 px-3" style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}>
+                            Score: {score}
+                        </div>
+                    </div>
+
+                    {/* Game Controls */}
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="flex items-center">
+                            <Clock size={16} className="mr-1" style={{ color: timeLeft <= 10 ? "#ef4444" : COLORS.NAVY }} />
+                            <div className={`text-sm font-bold ${timeLeft <= 10 ? "text-red-500" : ""}`}
+                                 style={{ color: timeLeft <= 10 ? "#ef4444" : COLORS.NAVY }}>
+                                {timeLeft}s
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center">
+                            <div className="text-sm mr-2" style={{ color: COLORS.ORANGE }}>
+                                Bonus: +{timeBonus}
+                            </div>
+                            <Zap size={16} style={{ color: COLORS.ORANGE }} />
+                        </div>
+                        
+                        <button
+                            onClick={useHint}
+                            disabled={hintsRemaining <= 0 || showHint}
+                            className="flex items-center px-2 py-1 rounded-full text-sm button-hover focus-visible"
+                            style={{
+                                backgroundColor: hintsRemaining > 0 && !showHint ? COLORS.BLUE : COLORS.BORDER_GRAY,
+                                color: hintsRemaining > 0 && !showHint ? COLORS.WHITE : "#9ca3af"
+                            }}
+                        >
+                            <HelpCircle size={14} className="mr-1" />
+                            Hint ({hintsRemaining})
+                        </button>
+                    </div>
+
+                    {/* Question Card */}
+                    <div className="rounded-lg p-6 mb-4 border-4" 
+                         style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                        
+                        <div className="flex justify-center mb-4">
+                            <div className="rounded-full h-16 w-16 flex items-center justify-center text-4xl"
+                                 style={{ backgroundColor: COLORS.YELLOW }}>
+                                {selectedTerm?.icon}
+                            </div>
+                        </div>
+                        
+                        <h3 className="font-bold text-xl mb-4 text-center" style={{ color: COLORS.NAVY }}>
+                            Which term matches this definition?
+                        </h3>
+                        
+                        {showHint && (
+                            <div className="border p-3 rounded-lg mb-4 text-sm"
+                                 style={{ backgroundColor: "#fffbeb", borderColor: COLORS.ORANGE }}>
+                                <div className="font-bold flex items-center" style={{ color: COLORS.ORANGE }}>
+                                    <HelpCircle size={14} className="mr-1" /> Hint:
+                                </div>
+                                <p style={{ color: "#b45309" }}>{generateHint()}</p>
+                            </div>
+                        )}
+                        
+                        <div className="p-3 rounded-lg mb-4" style={{ backgroundColor: "#f0f9ff" }}>
+                            {selectedTerm?.definition}
+                        </div>
+                        
+                        <div className="space-y-3">
+                            {options.map((option, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleAnswerSelect(option)}
+                                    disabled={selectedAnswer !== null}
+                                    className={`p-3 rounded-lg w-full text-left border button-hover focus-visible ${
+                                        selectedAnswer === option 
+                                            ? isCorrect 
+                                                ? "border-green-500" 
+                                                : "border-red-500"
+                                            : "border-gray-300 hover:border-indigo-500"
+                                    }`}
+                                    style={{
+                                        backgroundColor: selectedAnswer === option 
+                                            ? isCorrect 
+                                                ? "#dcfce7" 
+                                                : "#fee2e2"
+                                            : COLORS.WHITE,
+                                        borderColor: selectedAnswer === option 
+                                            ? isCorrect 
+                                                ? "#22c55e" 
+                                                : "#ef4444"
+                                            : COLORS.BORDER_GRAY
+                                    }}
+                                >
+                                    {option}
+                                    {selectedAnswer === option && (
+                                        isCorrect 
+                                            ? <Check className="inline ml-2 text-green-600" size={18} />
+                                            : <X className="inline ml-2 text-red-600" size={18} />
+                                    )}
+                                </button>
+                            ))}
+                            
+                            {selectedAnswer === "timeout" && (
+                                <div className="p-3 rounded-lg w-full text-center border"
+                                     style={{ backgroundColor: "#fee2e2", borderColor: "#ef4444", color: "#b91c1c" }}>
+                                    Time's up! The correct answer was: <span className="font-bold">{selectedTerm?.term}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    
+                    <div className="text-center text-sm" style={{ color: COLORS.NAVY }}>
+                        Difficulty: {" "}
+                        {difficulty === "easy" && <span style={{ color: COLORS.GREEN }}>Easy</span>}
+                        {difficulty === "medium" && <span style={{ color: COLORS.ORANGE }}>Medium</span>}
+                        {difficulty === "hard" && <span style={{ color: COLORS.PURPLE }}>Hard</span>}
+                    </div>
+                    
+                    <img src={IMAGES.robot} alt="AI Robot" 
+                         className="fixed bottom-0 right-0 h-36 w-auto pointer-events-none character-image" />
+                </div>
+            );
+
+            const renderResultScreen = () => {
+                const percentage = Math.round((score / questionsPerGame) * 100);
+                const totalScore = score + timeBonus;
+                
+                let message = "";
+                if (percentage >= 80) {
+                    message = "Amazing! You're an AI expert like Charlie!";
+                } else if (percentage >= 60) {
+                    message = "Great job! You're on your way to becoming an AI expert!";
+                } else {
+                    message = "Good effort! Keep learning about AI with Charlie!";
+                }
+
+                return (
+                    <div className="p-6 text-center" style={{ backgroundColor: COLORS.YELLOW }}>
+                        <h2 className="text-2xl font-bold mb-2" style={{ color: COLORS.NAVY }}>
+                            Game Complete!
+                        </h2>
+                        
+                        <div className="rounded-lg p-6 mb-6 border-4" 
+                             style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                            
+                            <div className="flex justify-center gap-4 mt-4 mb-6">
+                                <img src={IMAGES.charlie} alt="Charlie" className="h-24 w-auto character-image" />
+                                <img src={IMAGES.robot} alt="AI Robot" className="h-24 w-auto character-image" />
+                            </div>
+                            
+                            <div className="text-5xl font-bold mb-2" style={{ color: COLORS.NAVY }}>
+                                {score}/{questionsPerGame}
+                            </div>
+                            
+                            <div className="flex justify-center items-center space-x-2 mb-4">
+                                <div className="text-lg font-bold" style={{ color: COLORS.ORANGE }}>
+                                    Total Score: {totalScore}
+                                </div>
+                                {timeBonus > 0 && (
+                                    <div className="px-2 py-1 rounded-full text-sm flex items-center"
+                                         style={{ backgroundColor: "#fff7e0", color: COLORS.ORANGE }}>
+                                        <Zap size={14} className="mr-1" /> +{timeBonus} time bonus
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <p className="text-lg mb-4" style={{ color: COLORS.NAVY }}>
+                                {message}
+                            </p>
+                            
+                            <div className="bg-white rounded-lg p-4 mb-4 border-2"
+                                 style={{ borderColor: COLORS.BLUE, backgroundColor: "#f0f9ff" }}>
+                                <h3 className="font-bold mb-2" style={{ color: COLORS.NAVY }}>
+                                    Your Performance
+                                </h3>
+                                
+                                <div className="grid grid-cols-2 gap-3 mb-3">
+                                    <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.YELLOW }}>
+                                        <div className="text-sm" style={{ color: COLORS.NAVY }}>Difficulty</div>
+                                        <div className="font-bold">
+                                            {difficulty === "easy" && <span style={{ color: COLORS.GREEN }}>Easy</span>}
+                                            {difficulty === "medium" && <span style={{ color: COLORS.ORANGE }}>Medium</span>}
+                                            {difficulty === "hard" && <span style={{ color: COLORS.PURPLE }}>Hard</span>}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-2 rounded-lg" style={{ backgroundColor: COLORS.YELLOW }}>
+                                        <div className="text-sm" style={{ color: COLORS.NAVY }}>Hints Used</div>
+                                        <div className="font-bold" style={{ color: COLORS.NAVY }}>
+                                            {hintsUsed}/3
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="mb-2 font-bold" style={{ color: COLORS.NAVY }}>
+                                    Share your achievement!
+                                </div>
+                                
+                                <div className="flex justify-center space-x-4">
+                                    <button
+                                        onClick={handleShare}
+                                        className="p-2 rounded-full button-hover focus-visible"
+                                        style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
+                                        aria-label="Share your score" 
+                                    >
+                                        <Share2 size={20} />
+                                    </button>
+                                    <button
+                                        onClick={handleDownload}
+                                        className="p-2 rounded-full button-hover focus-visible"
+                                        style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
+                                        aria-label="Download achievement card"
+                                    >
+                                        <Download size={20} />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <a
+                                href="https://incredibleworld.framer.ai/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center font-bold mb-4 button-hover focus-visible"
+                                style={{ color: COLORS.NAVY }}
+                            >
+                                Get the full book to learn more! <ExternalLink size={16} className="ml-1" />
+                            </a>
+                        </div>
+                        
+                        <div className="flex justify-center space-x-4">
+                            <button
+                                onClick={restartGame}
+                                className="py-2 px-6 rounded-full button-hover focus-visible"
+                                style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
+                            >
+                                Play Again
+                            </button>
+                            <button
+                                onClick={goHome}
+                                className="border-2 py-2 px-6 rounded-full button-hover focus-visible"
+                                style={{ borderColor: COLORS.NAVY, color: COLORS.NAVY }}
+                            >
+                                Change Difficulty
+                            </button>
+                        </div>
+                        
+                        <img src={IMAGES.giraffe} alt="Skateboarding Giraffe" 
+                             className="fixed bottom-0 left-0 h-36 w-auto pointer-events-none character-image" />
+                    </div>
+                );
+            };
+
+            const renderAboutScreen = () => (
+                <div className="p-6" style={{ backgroundColor: COLORS.YELLOW }}>
+                    <button
+                        onClick={goHome}
+                        className="flex items-center mb-4 button-hover focus-visible"
+                        style={{ color: COLORS.NAVY }}
+                    >
+                        <ArrowLeft size={18} className="mr-1" /> Back to Home
+                    </button>
+                    
+                    <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: COLORS.NAVY }}>
+                        About the Book
+                    </h2>
+                    
+                    <div className="rounded-lg p-4 mb-6 border-4" 
+                         style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                        
+                        <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
+                            <img
+                                src={IMAGES.bookcover}
+                                alt="The Incredible World of AI with Charlie Book Cover"
+                                className="rounded-lg mb-4 md:mb-0 w-32 h-auto"
+                            />
+                            <div>
+                                <h3 className="font-bold text-lg mb-2" style={{ color: COLORS.NAVY }}>
+                                    The Incredible World of AI with Charlie
+                                </h3>
+                                <h4 className="text-sm mb-2" style={{ color: COLORS.ORANGE }}>
+                                    by Jerlyn Thomas
+                                </h4>
+                                <div style={{ color: COLORS.NAVY }}>
+                                    Meet Charlie, a curious and creative fifth grader who discovers AI (artificial intelligence) 
+                                    when she uses an app that creates images from her imagination.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="p-3 rounded-lg mb-4" style={{ backgroundColor: COLORS.YELLOW }}>
+                            <h4 className="font-bold mb-1" style={{ color: COLORS.NAVY }}>
+                                What you'll learn:
+                            </h4>
+                            <ul className="list-disc pl-5 space-y-1" style={{ color: COLORS.NAVY }}>
+                                <li>How AI works and creates</li>
+                                <li>Critical thinking about AI information</li>
+                                <li>Understanding AI's strengths and limitations</li>
+                                <li>Using AI responsibly and safely</li>
+                                <li>Preparing for a future with AI</li>
+                            </ul>
+                        </div>
+                        
+                        <div className="italic mb-4" style={{ color: COLORS.NAVY }}>
+                            "But I just made that up!" she exclaims when she sees a giraffe on a skateboard eating spaghetti appear on her screen.
+                        </div>
+                        
+                        <div className="mb-4" style={{ color: COLORS.NAVY }}>
+                            Join Charlie on an adventure to understand AI—how it works, what it can do, and how to use it responsibly. 
+                            Through engaging stories and activities, children will develop critical AI literacy skills for a technology-rich future.
+                        </div>
+                        
+                        <a
+                            href="https://incredibleworld.framer.ai/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="py-2 px-4 rounded-full inline-flex items-center button-hover focus-visible"
+                            style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
+                        >
+                            Get the Book <ExternalLink size={16} className="ml-1" />
+                        </a>
+                    </div>
+                    
+                    <div className="rounded-lg p-4 border-4" 
+                         style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                        <h3 className="font-bold text-lg mb-2" style={{ color: COLORS.NAVY }}>
+                            About the Author
+                        </h3>
+                        <p className="mb-2" style={{ color: COLORS.NAVY }}>
+                            Jerlyn O'Donnell née Thomas is a digital polymath passionate about making technology accessible to young readers. 
+                            With a background in STEAM, she created Charlie to help kids understand and navigate the exciting world of AI.
+                        </p>
+                        <p style={{ color: COLORS.NAVY }}>
+                            When not writing, Jerlyn enjoys drawing, running, and exploring new technologies. 
+                            She lives in The Bronx with her husband and toddler, Mattis.
+                        </p>
+                    </div>
+                    
+                    <img src={IMAGES.giraffe} alt="Skateboarding Giraffe" 
+                         className="fixed bottom-0 left-0 h-36 w-auto pointer-events-none character-image" />
+                </div>
+            );
+
+            const renderInstructionsScreen = () => (
+                <div className="p-6" style={{ backgroundColor: COLORS.YELLOW }}>
+                    <button
+                        onClick={goHome}
+                        className="flex items-center mb-4 button-hover focus-visible"
+                        style={{ color: COLORS.NAVY }}
+                    >
+                        <ArrowLeft size={18} className="mr-1" /> Back to Home
+                    </button>
+                    
+                    <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: COLORS.NAVY }}>
+                        Game Instructions
+                    </h2>
+                    
+                    <div className="rounded-lg p-4 mb-4 border-4" 
+                         style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                        
+                        <h3 className="font-bold text-lg mb-2" style={{ color: COLORS.NAVY }}>
+                            AI Quiz Challenge
+                        </h3>
+                        
+                        <div className="p-3 rounded-lg mb-4" style={{ backgroundColor: COLORS.YELLOW }}>
+                            <p style={{ color: COLORS.NAVY }}>
+                                Test your AI knowledge! You'll be shown a definition from the book, and you need to select 
+                                the correct AI term that matches it from four possible options.
+                            </p>
+                        </div>
+                        
+                        <h3 className="font-bold text-lg mb-2" style={{ color: COLORS.NAVY }}>
+                            Game Features
+                        </h3>
+                        
+                        <div className="space-y-3 mb-4">
+                            {[
+                                {
+                                    icon: <Star size={18} />,
+                                    title: "Difficulty Levels",
+                                    description: "Choose from Easy, Medium, or Hard to match your AI knowledge!"
+                                },
+                                {
+                                    icon: <Clock size={18} />,
+                                    title: "Timer Challenge", 
+                                    description: "Answer quickly to earn bonus points! Each question has a 30-second time limit."
+                                },
+                                {
+                                    icon: <HelpCircle size={18} />,
+                                    title: "Hint System",
+                                    description: "Stuck on a question? Use up to 3 hints per game to get clues about the correct term."
+                                },
+                                {
+                                    icon: <Share2 size={18} />,
+                                    title: "Share Your Score",
+                                    description: "Show off your AI knowledge by sharing achievement cards with friends!"
+                                }
+                            ].map((feature, index) => (
+                                <div key={index} className="flex">
+                                    <div className="w-10 flex-shrink-0" style={{ color: COLORS.NAVY }}>
+                                        {feature.icon}
+                                    </div>
+                                    <div>
+                                        <div className="font-bold" style={{ color: COLORS.NAVY }}>
+                                            {feature.title}
+                                        </div>
+                                        <p className="text-sm" style={{ color: COLORS.NAVY }}>
+                                            {feature.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <h3 className="font-bold text-lg mb-2" style={{ color: COLORS.NAVY }}>
+                            Game Rules
+                        </h3>
+                        
+                        <ul className="list-disc pl-5 space-y-2" style={{ color: COLORS.NAVY }}>
+                            <li>Each game has 5 questions from the book's glossary</li>
+                            <li>Select the AI term that matches the definition shown</li>
+                            <li>Get immediate feedback on your answer</li>
+                            <li>Try to answer quickly for bonus points</li>
+                            <li>Use hints wisely - you only get 3 per game!</li>
+                        </ul>
+                    </div>
+                    
+                    <div className="rounded-lg p-4 border-4" 
+                         style={{ backgroundColor: COLORS.WHITE, borderColor: COLORS.NAVY }}>
+                        
+                        <h3 className="font-bold text-lg mb-2" style={{ color: COLORS.NAVY }}>
+                            Tips for Success
+                        </h3>
+                        
+                        <ul className="list-disc pl-5 space-y-2" style={{ color: COLORS.NAVY }}>
+                            <li>Read the definition carefully before selecting an answer</li>
+                            <li>Look for key concepts that connect to specific AI terms</li>
+                            <li>If you're running out of time, make your best guess</li>
+                            <li>Save hints for the most difficult questions</li>
+                            <li>Challenge yourself with harder difficulty levels as you improve</li>
+                            <li>For the full learning experience, check out the complete book!</li>
+                        </ul>
+                    </div>
+                    
+                    <img src={IMAGES.charlie} alt="Charlie" 
+                         className="fixed bottom-0 right-0 h-36 w-auto pointer-events-none character-image" />
+                </div>
+            );
+
+            // Main render
+            const renderCurrentScreen = () => {
+                switch (gameState) {
+                    case "start":
+                        return renderStartScreen();
+                    case "playing":
+                        return renderPlayingScreen();
+                    case "result":
+                        return renderResultScreen();
+                    case "about":
+                        return renderAboutScreen();
+                    case "instructions":
+                        return renderInstructionsScreen();
+                    default:
+                        return <div>Something went wrong</div>;
+                }
+            };
+
+            return (
+                <div className="quiz-container flex flex-col">
+                    <div className="flex-1">
+                        {renderCurrentScreen()}
+                    </div>
+                    <footer className="py-2 text-center text-sm" 
+                            style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}>
+                        © 2025 Jerlyn Thomas | The Incredible World of AI with Charlie
+                    </footer>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<AIQuizGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>
