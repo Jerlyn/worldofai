@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Incredible World of AI with Charlie - Quiz Game</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .quiz-container {
@@ -30,7 +29,6 @@
             image-rendering: crisp-edges;
         }
         
-        /* Ensure proper contrast for all interactive elements */
         .contrast-compliant {
             color: #1b294b;
             background-color: #ffffff;
@@ -39,6 +37,16 @@
         .contrast-compliant:hover {
             background-color: #f8fafc;
         }
+
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -46,10 +54,90 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
-        const { 
-            Star, ChevronRight, Book, Info, ArrowLeft, Clock, Zap, 
-            HelpCircle, Check, X, Share2, Download, ExternalLink 
-        } = lucideReact;
+
+        // Inline SVG Icons
+        const Icons = {
+            Star: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+            ),
+            ChevronRight: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            ),
+            Book: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                </svg>
+            ),
+            Info: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                </svg>
+            ),
+            ArrowLeft: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                </svg>
+            ),
+            Clock: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+            ),
+            Zap: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+            ),
+            HelpCircle: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <path d="M12 17h.01" />
+                </svg>
+            ),
+            Check: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+            ),
+            X: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            ),
+            Share2: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+                    <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+                </svg>
+            ),
+            Download: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" x2="12" y1="15" y2="3" />
+                </svg>
+            ),
+            ExternalLink: ({ size = 24, className = "" }) => (
+                <svg className={`icon ${className}`} width={size} height={size} viewBox="0 0 24 24">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" x2="21" y1="14" y2="3" />
+                </svg>
+            )
+        };
 
         // Color constants for accessibility compliance
         const COLORS = {
@@ -332,16 +420,16 @@
                         url: window.location.href
                     });
                 } else {
-                    // Fallback for browsers without Web Share API
                     const text = `I scored ${score}/${questionsPerGame} on the AI Quiz Challenge! Test your AI knowledge with Charlie at ${window.location.href}`;
                     navigator.clipboard.writeText(text).then(() => {
                         alert('Score copied to clipboard!');
+                    }).catch(() => {
+                        alert(`My AI Quiz Score: ${score}/${questionsPerGame} - Copy this to share!`);
                     });
                 }
             };
 
             const handleDownload = () => {
-                // Create a simple achievement card download
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = 400;
@@ -428,7 +516,7 @@
                                 >
                                     <div className="flex justify-center mb-1">
                                         {Array.from({ length: stars }, (_, i) => (
-                                            <Star key={i} size={16} />
+                                            <Icons.Star key={i} size={16} />
                                         ))}
                                     </div>
                                     {label}
@@ -441,7 +529,7 @@
                             className="py-3 px-6 rounded-full flex items-center justify-center w-full button-hover focus-visible"
                             style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
                         >
-                            Start Quiz Challenge <ChevronRight className="ml-2" size={20} />
+                            Start Quiz Challenge <Icons.ChevronRight className="ml-2" size={20} />
                         </button>
                     </div>
                     
@@ -451,14 +539,14 @@
                             className="flex items-center button-hover focus-visible"
                             style={{ color: COLORS.NAVY }}
                         >
-                            <Book size={18} className="mr-1" /> About the Book
+                            <Icons.Book size={18} className="mr-1" /> About the Book
                         </button>
                         <button
                             onClick={() => setGameState("instructions")}
                             className="flex items-center button-hover focus-visible"
                             style={{ color: COLORS.NAVY }}
                         >
-                            <Info size={18} className="mr-1" /> Game Instructions
+                            <Icons.Info size={18} className="mr-1" /> Game Instructions
                         </button>
                     </div>
                     
@@ -476,7 +564,7 @@
                             className="flex items-center button-hover focus-visible"
                             style={{ color: COLORS.NAVY }}
                         >
-                            <ArrowLeft size={18} className="mr-1" /> Exit
+                            <Icons.ArrowLeft size={18} className="mr-1" /> Exit
                         </button>
                         <div style={{ color: COLORS.NAVY }} className="font-semibold">
                             {currentQuestion + 1}/{questionsPerGame}
@@ -489,7 +577,7 @@
                     {/* Game Controls */}
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex items-center">
-                            <Clock size={16} className="mr-1" style={{ color: timeLeft <= 10 ? "#ef4444" : COLORS.NAVY }} />
+                            <Icons.Clock size={16} className="mr-1" style={{ color: timeLeft <= 10 ? "#ef4444" : COLORS.NAVY }} />
                             <div className={`text-sm font-bold ${timeLeft <= 10 ? "text-red-500" : ""}`}
                                  style={{ color: timeLeft <= 10 ? "#ef4444" : COLORS.NAVY }}>
                                 {timeLeft}s
@@ -500,7 +588,7 @@
                             <div className="text-sm mr-2" style={{ color: COLORS.ORANGE }}>
                                 Bonus: +{timeBonus}
                             </div>
-                            <Zap size={16} style={{ color: COLORS.ORANGE }} />
+                            <Icons.Zap size={16} style={{ color: COLORS.ORANGE }} />
                         </div>
                         
                         <button
@@ -512,7 +600,7 @@
                                 color: hintsRemaining > 0 && !showHint ? COLORS.WHITE : "#9ca3af"
                             }}
                         >
-                            <HelpCircle size={14} className="mr-1" />
+                            <Icons.HelpCircle size={14} className="mr-1" />
                             Hint ({hintsRemaining})
                         </button>
                     </div>
@@ -536,7 +624,7 @@
                             <div className="border p-3 rounded-lg mb-4 text-sm"
                                  style={{ backgroundColor: "#fffbeb", borderColor: COLORS.ORANGE }}>
                                 <div className="font-bold flex items-center" style={{ color: COLORS.ORANGE }}>
-                                    <HelpCircle size={14} className="mr-1" /> Hint:
+                                    <Icons.HelpCircle size={14} className="mr-1" /> Hint:
                                 </div>
                                 <p style={{ color: "#b45309" }}>{generateHint()}</p>
                             </div>
@@ -575,8 +663,8 @@
                                     {option}
                                     {selectedAnswer === option && (
                                         isCorrect 
-                                            ? <Check className="inline ml-2 text-green-600" size={18} />
-                                            : <X className="inline ml-2 text-red-600" size={18} />
+                                            ? <Icons.Check className="inline ml-2 text-green-600" size={18} />
+                                            : <Icons.X className="inline ml-2 text-red-600" size={18} />
                                     )}
                                 </button>
                             ))}
@@ -640,7 +728,7 @@
                                 {timeBonus > 0 && (
                                     <div className="px-2 py-1 rounded-full text-sm flex items-center"
                                          style={{ backgroundColor: "#fff7e0", color: COLORS.ORANGE }}>
-                                        <Zap size={14} className="mr-1" /> +{timeBonus} time bonus
+                                        <Icons.Zap size={14} className="mr-1" /> +{timeBonus} time bonus
                                     </div>
                                 )}
                             </div>
@@ -684,7 +772,7 @@
                                         style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
                                         aria-label="Share your score" 
                                     >
-                                        <Share2 size={20} />
+                                        <Icons.Share2 size={20} />
                                     </button>
                                     <button
                                         onClick={handleDownload}
@@ -692,7 +780,7 @@
                                         style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
                                         aria-label="Download achievement card"
                                     >
-                                        <Download size={20} />
+                                        <Icons.Download size={20} />
                                     </button>
                                 </div>
                             </div>
@@ -704,7 +792,7 @@
                                 className="inline-flex items-center font-bold mb-4 button-hover focus-visible"
                                 style={{ color: COLORS.NAVY }}
                             >
-                                Get the full book to learn more! <ExternalLink size={16} className="ml-1" />
+                                Get the full book to learn more! <Icons.ExternalLink size={16} className="ml-1" />
                             </a>
                         </div>
                         
@@ -738,7 +826,7 @@
                         className="flex items-center mb-4 button-hover focus-visible"
                         style={{ color: COLORS.NAVY }}
                     >
-                        <ArrowLeft size={18} className="mr-1" /> Back to Home
+                        <Icons.ArrowLeft size={18} className="mr-1" /> Back to Home
                     </button>
                     
                     <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: COLORS.NAVY }}>
@@ -797,7 +885,7 @@
                             className="py-2 px-4 rounded-full inline-flex items-center button-hover focus-visible"
                             style={{ backgroundColor: COLORS.NAVY, color: COLORS.WHITE }}
                         >
-                            Get the Book <ExternalLink size={16} className="ml-1" />
+                            Get the Book <Icons.ExternalLink size={16} className="ml-1" />
                         </a>
                     </div>
                     
@@ -828,7 +916,7 @@
                         className="flex items-center mb-4 button-hover focus-visible"
                         style={{ color: COLORS.NAVY }}
                     >
-                        <ArrowLeft size={18} className="mr-1" /> Back to Home
+                        <Icons.ArrowLeft size={18} className="mr-1" /> Back to Home
                     </button>
                     
                     <h2 className="text-2xl font-bold mb-4 text-center" style={{ color: COLORS.NAVY }}>
@@ -856,22 +944,22 @@
                         <div className="space-y-3 mb-4">
                             {[
                                 {
-                                    icon: <Star size={18} />,
+                                    icon: <Icons.Star size={18} />,
                                     title: "Difficulty Levels",
                                     description: "Choose from Easy, Medium, or Hard to match your AI knowledge!"
                                 },
                                 {
-                                    icon: <Clock size={18} />,
+                                    icon: <Icons.Clock size={18} />,
                                     title: "Timer Challenge", 
                                     description: "Answer quickly to earn bonus points! Each question has a 30-second time limit."
                                 },
                                 {
-                                    icon: <HelpCircle size={18} />,
+                                    icon: <Icons.HelpCircle size={18} />,
                                     title: "Hint System",
                                     description: "Stuck on a question? Use up to 3 hints per game to get clues about the correct term."
                                 },
                                 {
-                                    icon: <Share2 size={18} />,
+                                    icon: <Icons.Share2 size={18} />,
                                     title: "Share Your Score",
                                     description: "Show off your AI knowledge by sharing achievement cards with friends!"
                                 }
