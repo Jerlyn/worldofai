@@ -135,7 +135,7 @@ const characters = {
   robot: "./images/robot.png",     // Robot character
   giraffe: "./images/giraffe.png", // Skateboarding giraffe (only used on landing screen)
   titleImg: "./images/title.png"   // Title image
-  bookImg: "./images/book.png" // Book cover image
+  bookImg: "./docs/images/bookcover.png" // Book cover image
 };
 
 // Character CSS styles for fixed positioning - removing any giraffe styling
@@ -697,7 +697,7 @@ const App = () => {
               <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
                 <img 
                 src={characters.bookImg} 
-                alt="The Incredible World of AI with Charlie Book Cover" 
+                alt="Cover of The Incredible World of AI with Charlie Book" 
                 className="rounded-lg mb-4 md:mb-0 w-32 h-auto"
               />
                 <div>
